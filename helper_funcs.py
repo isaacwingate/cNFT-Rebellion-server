@@ -1,3 +1,7 @@
+from discord.ext import commands
+import discord
+from datetime import datetime
+
 async def check_owner(ctx):
 	is_owner = await ctx.bot.is_owner(ctx.author)
 	if is_owner:
@@ -25,3 +29,4 @@ def print_log(log):
 	current_time = now.strftime("%d/%m/%y %H:%M:%S")
 	print(current_time + " - " + log)
 	return
+
