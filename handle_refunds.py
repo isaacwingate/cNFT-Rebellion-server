@@ -8,7 +8,7 @@ from time import sleep
 from server_variables import *
 
 client = MongoClient(port=27017)
-db = client.AdaApocalypse.pendingRefunds
+db = client.Kong.pendingRefunds
 
 wal = Wallet(WALLET_ID, backend=WalletREST(port=1338))
 

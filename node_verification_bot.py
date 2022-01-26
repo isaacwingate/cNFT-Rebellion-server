@@ -118,6 +118,32 @@ async def on_ready():
 
 #################### END INIT DISCORD BOT ####################
 
+@discord_client.command()
+@is_dm()
+async def reset(ctx):
+	guild = discord_client.get_guild(SERVER_ID)
+
+	role = discord.utils.get(guild.roles, name=ROLE_NAME)
+
+	user_id = ctx.author.id
+	member = guild.get_member(int(user_id))
+	username = str(ctx.author.name)
+
+	if user_id in user_ids:
+	    user_ids.remove(user_id)
+	await removeMemberID(user_id)
+	await removeTx(user_id)
+
+	for r_name in ROLE_NAME:
+		if r_name in [x.name for x in member.roles]:
+			role = discord.utils.get(guild.roles, name=r_name)         # remove Con role
+			await member.remove_roles(role)
+
+	#await ctx.send('Reset succesfully! Type /join to try again.')
+	await dm_user(user_id, "Reset succesful! Type /join to try again.", None, None, discord.Colour.green())
+	print_log(username + " has used /reset")
+	return
+
 #################### /join Command ####################
 @discord_client.command()
 @is_dm()
@@ -189,7 +215,7 @@ async def on_check_pending_tx():
 
 		if not txn:
 			# increment attempts
-			expired_user_id = checkAttempts(str(a['addr']))
+			expired_user_id = await checkAttempts(str(a['addr']), a['amount'])
 			if expired_user_id:
 				await dm_user(expired_user_id, "⚠️⚠️ Address has expired, **DO NOT SEND ADA !!** ⚠️⚠️ Please use /join to try again!",None,None, discord.Colour.red())
 		else:

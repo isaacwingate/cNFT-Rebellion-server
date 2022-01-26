@@ -11,17 +11,17 @@ from handle_db import *
 
 # Init queue of payment addresses
 def initQueue():
-    queue = []
-    wal = Wallet(WALLET_ID, backend=WalletREST(port=1338))
+	queue = []
+	wal = Wallet(WALLET_ID, backend=WalletREST(port=1338))
 
-    allAddresses = wal.addresses(with_usage=True)
+	allAddresses = wal.addresses(with_usage=True)
 
-    for addr, used in allAddresses:
-        if not used and not searchPendingTx(addr):
-            queue.append(addr)
+	for addr in allAddresses:
+		if not addr[1] and not searchPendingTx(str(addr[0])):
+			queue.append(addr[0])
 
-    print("Free addr's: ", len(queue))
-    return queue
+	print("Free addr's: ", len(queue))
+	return queue
 
 # check if payment has been received
 def checkForPayment(paymentAddr, amount):
@@ -33,9 +33,8 @@ def checkForPayment(paymentAddr, amount):
 	if not payment_response:
 		return None,None
 
-	amount = int(amount * 1000000)
 
-	if float(payment_response.json()['received_sum'][0]['quantity']) == amount:
+	if float(payment_response.json()['received_sum'][0]['quantity']) == int(amount * 1000000):
 		print_log(str(amount) + ' payment received on ' + str(paymentAddr))
 
 		txn_url = "https://cardano-mainnet.blockfrost.io/api/v0/addresses/"+str(paymentAddr)+"/txs?order=desc"

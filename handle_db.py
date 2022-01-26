@@ -6,19 +6,19 @@ from server_variables import *
 client = MongoClient(port=27017)
 # Check if address is currently being used
 def searchPendingTx(addr):
-	db = client.AdaApocalypse.pendingTx
+	db = client.Kong.pendingTx
 	if db.find_one({"addr":str(addr), "status": "waiting"}):
 		return True
 	return False
 
 # find specific member
 def findMember(user_id):
-	db = client.AdaApocalypse.clubMembers
+	db = client.Kong.clubMembers
 	return db.find_one({"id": user_id},{"addr": 1})
 
 # get all members 
 def get_all_members():
-	db = client.AdaApocalypse.clubMembers
+	db = client.Kong.clubMembers
 	members = []
 	result = db.find({},{"addr":1,"id":1,"name":1, "role": 1, "ass_cnt": 1})
 	for x in result:
@@ -27,7 +27,7 @@ def get_all_members():
 
 # check if user has a pending txn
 def searchPendingUsr(uID):
-	db = client.AdaApocalypse.pendingTx
+	db = client.Kong.pendingTx
 	result = db.find_one({"user_id": uID, "status": "waiting"},{"addr": 1, "attempts": 1, "amount": 1})
 	if result:
 		return result
@@ -35,7 +35,7 @@ def searchPendingUsr(uID):
 
 # insert pending txn
 async def insertPendingTx(mid,name,addr,amount):
-	db = client.AdaApocalypse.pendingTx
+	db = client.Kong.pendingTx
 	pendingTx = {
 	"user_id": int(mid),
 	"username": str(name),
@@ -48,19 +48,19 @@ async def insertPendingTx(mid,name,addr,amount):
 
 # get all pending txn's
 def getAllPendingAddr():
-	db = client.AdaApocalypse.pendingTx
+	db = client.Kong.pendingTx
 	result = []
 	result = db.find({"status": "waiting"},{"addr": 1, "username": 1, "user_id": 1, "amount": 1})
 	return result
 
 # check txn attempts and increase
-def checkAttempts(addr):
-	db = client.AdaApocalypse.pendingTx
-	result = db.find_one({"addr": addr, "status": "waiting"},{"attempts": 1, "user_id": 1})
-	if int(result['attempts'] >= TXN_TIME_LIMIT):
+async def checkAttempts(addr, amount):
+	db = client.Kong.pendingTx
+	r = db.find_one({"amount":amount, "addr": str(addr), "status": "waiting"},{"attempts": 1, "user_id": 1})
+	if int(r['attempts'] >= TXN_TIME_LIMIT):
 		newValues = { "$set": {"status": "expired"} }
-		db.update_one({"addr": str(addr)}, newValues)
-		return result['user_id']
+		db.update_one({"addr": str(addr), "amount": amount, "status": "waiting"}, newValues)
+		return r['user_id']
 	else:
 		newValues = { "$inc": {"attempts": 1} }
 		db.update_one({"addr": str(addr)}, newValues)
@@ -68,7 +68,7 @@ def checkAttempts(addr):
 
 # insert refund into db
 async def insertRefund(name, addr, amount):
-	db = client.AdaApocalypse.pendingRefunds
+	db = client.Kong.pendingRefunds
 	refund = {
 	"name": name,
 	"addr": addr,
@@ -79,7 +79,7 @@ async def insertRefund(name, addr, amount):
 
 # insert member to db
 async def insertMember(mid,name,addr,txn, role_name, asset_cnt):
-	db = client.AdaApocalypse.clubMembers
+	db = client.Kong.clubMembers
 	member = {
     "id": mid,
     "name": name,
@@ -92,18 +92,28 @@ async def insertMember(mid,name,addr,txn, role_name, asset_cnt):
 
 # remove pending txn
 def removePendingTx(addr):
-	db = client.AdaApocalypse.pendingTx
+	db = client.Kong.pendingTx
 	newValues = { "$set": {"status": "payment_received"} }
 	db.update_many({"addr": str(addr)}, newValues)
 
 # remove member
 async def removeMember(addr):
-	db = client.AdaApocalypse.clubMembers
+	db = client.Kong.clubMembers
 	db.delete_one({"addr": str(addr)})
+
+async def removeMemberID(id):
+	db = client.Kong.clubMembers
+	db.delete_one({"id": int(id)})
+
 
 # update member
 async def updateRoleResweep(id, role, cnt):
-	db = client.AdaApocalypse.clubMembers
+	db = client.Kong.clubMembers
 
 	newValues = { "$set": {"role": str(role), "ass_cnt": cnt} }
 	db.update_one({"id": int(id)}, newValues)
+
+# remove txn
+async def removeTx(mid):
+	db = client.Kong.pendingTx
+	db.delete_many({"user_id": int(mid)})
