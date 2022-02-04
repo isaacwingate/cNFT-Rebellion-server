@@ -10,9 +10,14 @@ async def check_owner(ctx):
 		return False
 
 def is_owner():
-    async def pred(ctx):              #ISAAC             #MOC
-        return ctx.author.id in [339011064660492288, 455132283821883402]
+    async def pred(ctx):              #ISAAC             
+        return ctx.author.id in [339011064660492288]
     return commands.check(pred)
+
+def is_admin_owner():
+	async def pred(ctx):
+		return ctx.author.id in [339011064660492288,586916122625048588,418107168818987008]
+	return commands.check(pred)
 
 def is_dm():
     async def pred(ctx):
@@ -30,3 +35,16 @@ def print_log(log):
 	print(current_time + " - " + log)
 	return
 
+def binSearch(num, arr):
+	low = 0
+	high = len(arr) - 1
+
+	while low <= high:
+		middle = low + (high - low) // 2
+		if arr[middle] == num:
+			return True
+		elif arr[middle] < num:
+			low = middle + 1
+		else:
+			high = middle - 1
+	return False

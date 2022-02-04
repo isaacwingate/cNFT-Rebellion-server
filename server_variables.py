@@ -1,14 +1,16 @@
+#https://discord.com/api/oauth2/authorize?client_id=938379954012442635&permissions=268520448&scope=bot
+DISCORD_TOKEN = 'OTM4Mzc5OTU0MDEyNDQyNjM1.Yfpcbw.0u6ylEv_-rDrLK2nQ1HSzoheV30'
 
-DISCORD_TOKEN = 'OTI1NjAzOTA0MDk0MzQzMTc5.Ycvhzw.6lVA-lQVe9wDgOAaQn1d8woq1YI'
-SERVER_ID = 900766546090160168
-ROLE_NAME = ['Hammock', 'Wood Cabin', 'Coffee Shop', 'Beach Hostel', 'Mystic Mansion', 'Exotic Resort']
+SERVER_ID = 894138151491215411
+
+ROLE_NAME = "Merch Token"
+
 GAS = 0.19
-POLICY = ['c56d4cceb8a8550534968e1bf165137ca41e908d2d780cc1402079bd']
+
+POLICY = ['0ae278559756650bfa0daa03d888298fe708dd6c31a7bb800ea383ec']
+
 BLOCKFROST_KEY = 'mainnetNgcpwCx37rgAYhAlXWtPdSBdAs56O3qC'
-WALLET_ID = 'e8684f32585e0eb3c0d64031dcc1f533cc9224cb'
-TXN_TIME_LIMIT = 90
+WALLET_ID = '7f663209c1823d6085db162369f357f2eb289d15'
+TXN_TIME_LIMIT = 120
 
-PFP = "https://cdn.discordapp.com/avatars/925603904094343179/f92ec9d86cdfe1feae03f535821b2604.webp"
-
-
-
+PFP = "https://cdn.discordapp.com/icons/894138151491215411/a_4d9c2232999a6b853873a843dc1ce9a0.webp"

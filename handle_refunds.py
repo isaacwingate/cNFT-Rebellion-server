@@ -8,7 +8,7 @@ from time import sleep
 from server_variables import *
 
 client = MongoClient(port=27017)
-db = client.Kong.pendingRefunds
+db = client.Cyclr.pendingRefunds
 
 wal = Wallet(WALLET_ID, backend=WalletREST(port=1338))
 
@@ -36,7 +36,7 @@ while(True):
 		sleep(60)
 		consecutive_count = 0
 		
-	elif consecutive_count == 10 and cnt >= 1:
+	elif consecutive_count == 5 and cnt >= 1:
 
 		print_log(str(cnt) + " refunds waiting too long, refunding now")
 		batch = list(db.find().limit(cnt))

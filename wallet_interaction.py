@@ -6,7 +6,7 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4).pprint
 
 from server_variables import *
-from helper_funcs import print_log
+from helper_funcs import print_log, binSearch
 from handle_db import *
 
 # Init queue of payment addresses
@@ -82,18 +82,12 @@ def searchAddr(addr):
 		if response.json():
 			for x in response.json():
 				for p in POLICY:
-					if str(x['unit']).startswith(p):
+					asset_id = str(x['unit'])
+					if asset_id.startswith(p):
 						cnt += 1
+
+						
 			page +=1
 		else:
 			return cnt
 
-'''
-user_addr, txn = checkForPayment('addr1q8k5s7827cneglexmcm753y772qgdjkxw576avcnf6hyxjjjxltk0rf95c3723wazp582e7jhl5ha9uhey0hxnary63q7pxvdx',2.1405)
-
-print("addr: ",user_addr)
-print("txn: ",txn)
-
-cnt = searchAddr('stake1u9fr04m835j6vgl9ghw3q6r4vlftl6t7j7tuj8mnf73jdgsr8rp7n')
-
-print(cnt)'''
